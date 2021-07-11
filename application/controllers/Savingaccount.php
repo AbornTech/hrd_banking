@@ -18,6 +18,9 @@ class Savingaccount extends CI_Controller
     }
     public function index()
     {
+        if (!$this->ion_auth->logged_in() || (!$this->ion_auth->in_group(array(1)))) {
+			redirect('front/login', 'refresh');
+		}
         $pageData = new stdClass();
         $this->data =   array();
         $pageData->page_meta_title       =   'Saving Account';
@@ -29,6 +32,9 @@ class Savingaccount extends CI_Controller
 
     public function scheme()
     {
+        if (!$this->ion_auth->logged_in() || (!$this->ion_auth->in_group(array(1)))) {
+			redirect('front/login', 'refresh');
+		}
         $pageData = new stdClass();
         $this->data =   array();
         $pageData->page_meta_title       =   'Saving Account Scheme';
@@ -41,6 +47,9 @@ class Savingaccount extends CI_Controller
 
     public function new_scheme()
     {
+        if (!$this->ion_auth->logged_in() || (!$this->ion_auth->in_group(array(1)))) {
+			redirect('front/login', 'refresh');
+		}
         $pageData = new stdClass();
         $this->data =   array();
         $pageData->page_meta_title       =   'Add Scheme';
@@ -52,6 +61,9 @@ class Savingaccount extends CI_Controller
     }
 
     public function save_scheme(){
+        if (!$this->ion_auth->logged_in() || (!$this->ion_auth->in_group(array(1)))) {
+			redirect('front/login', 'refresh');
+		}
         try {
             $isNew =  $this->input->post("isNew");
             $data = (object) $this->input->post("scheme");
@@ -98,6 +110,9 @@ class Savingaccount extends CI_Controller
 
     
     public function scheme_details($scheme_id){
+        if (!$this->ion_auth->logged_in() || (!$this->ion_auth->in_group(array(1)))) {
+			redirect('front/login', 'refresh');
+		}
         $pageData = new stdClass();
         $this->data =   array();
         $pageData->page_meta_title       =   'Scheme Details';
@@ -114,6 +129,9 @@ class Savingaccount extends CI_Controller
 
 
     public function edit_scheme($scheme_id){
+        if (!$this->ion_auth->logged_in() || (!$this->ion_auth->in_group(array(1)))) {
+			redirect('front/login', 'refresh');
+		}
         $pageData = new stdClass();
         $this->data =   array();
         $pageData->page_meta_title       =   'Scheme Details';
@@ -128,6 +146,9 @@ class Savingaccount extends CI_Controller
     }
     
     public function delete_scheme($id=0){
+        if (!$this->ion_auth->logged_in() || (!$this->ion_auth->in_group(array(1)))) {
+			redirect('front/login', 'refresh');
+		}
         if(empty($id)){
             redirect(base_url());
         }
@@ -146,6 +167,9 @@ class Savingaccount extends CI_Controller
     }
 
     public function saving_account_application(){
+        if (!$this->ion_auth->logged_in() || (!$this->ion_auth->in_group(array(1)))) {
+			redirect('front/login', 'refresh');
+		}
         $pageData = new stdClass();
         $this->data =   array();
         $pageData->page_meta_title       =   'Saving Account Application';
@@ -158,6 +182,9 @@ class Savingaccount extends CI_Controller
 
 
     public function manage_savingapplication(){
+        if (!$this->ion_auth->logged_in() || (!$this->ion_auth->in_group(array(1)))) {
+			redirect('front/login', 'refresh');
+		}
         $pageData = new stdClass();
         $this->data =   array();
         $pageData->page_meta_title       =   'Manage Saving Account Application';
@@ -170,6 +197,9 @@ class Savingaccount extends CI_Controller
     }
     
     public function save_application(){
+        if (!$this->ion_auth->logged_in() || (!$this->ion_auth->in_group(array(1)))) {
+			redirect('front/login', 'refresh');
+		}
         try {
             $isNew =  $this->input->post("isNew");
             $data = (object) $this->input->post("scheme");
@@ -235,6 +265,9 @@ class Savingaccount extends CI_Controller
 
     function error_404()
     {
+        if (!$this->ion_auth->logged_in()) {
+			redirect('front/login', 'refresh');
+		}
         $pageData = new stdClass();
         $this->data =   array();
         $pageData->page_alias = "error_404";

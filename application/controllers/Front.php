@@ -23,10 +23,26 @@ class Front extends CI_Controller
         $pageData->page_meta_keyword     =   '';
         $pageData->page_meta_description =   '';
         $this->data['pageData']     =   $pageData;
+        $this->load->view('front/login', $this->data);
+    }
+
+    public function dashboard(){
+        if (!$this->ion_auth->logged_in() || (!$this->ion_auth->in_group(array(1)))) {
+			redirect('front/login', 'refresh');
+		}
+        $pageData = new stdClass();
+        $this->data =   array();
+        $pageData->page_meta_title       =   'HRDNL';
+        $pageData->page_meta_keyword     =   '';
+        $pageData->page_meta_description =   '';
+        $this->data['pageData']     =   $pageData;
         $this->load->view('front/index', $this->data);
     }
     
     public function member_group(){
+        if (!$this->ion_auth->logged_in() || (!$this->ion_auth->in_group(array(1)))) {
+			redirect('front/login', 'refresh');
+		}
         $pageData = new stdClass();
         $this->data =   array();
         $pageData->page_meta_title       =   'Member Group';
@@ -38,6 +54,9 @@ class Front extends CI_Controller
     }
 
     public function manage_member_group(){
+        if (!$this->ion_auth->logged_in() || (!$this->ion_auth->in_group(array(1)))) {
+			redirect('front/login', 'refresh');
+		}
         $pageData = new stdClass();
         $this->data =   array();
         $pageData->page_meta_title       =   'Manage Member Group';
@@ -49,6 +68,9 @@ class Front extends CI_Controller
     }
 
     public function edit_member_group($id){
+        if (!$this->ion_auth->logged_in() || (!$this->ion_auth->in_group(array(1)))) {
+			redirect('front/login', 'refresh');
+		}
         $pageData = new stdClass();
         $this->data =   array();
         $pageData->page_meta_title       =   'Edit Member Group';
@@ -64,6 +86,9 @@ class Front extends CI_Controller
     }
 
     public function save_member_group(){
+        if (!$this->ion_auth->logged_in() || (!$this->ion_auth->in_group(array(1)))) {
+			redirect('front/login', 'refresh');
+		}
         try {
             $isNew =  $this->input->post("isNew"); 
             $data = (object) $this->input->post("group");
@@ -103,6 +128,9 @@ class Front extends CI_Controller
     }
 
     public function members(){
+        if (!$this->ion_auth->logged_in() || (!$this->ion_auth->in_group(array(1)))) {
+			redirect('front/login', 'refresh');
+		}
         $pageData = new stdClass();
         $this->data =   array();
         $pageData->page_meta_title       =   'Members';
@@ -115,6 +143,9 @@ class Front extends CI_Controller
     }
 
     public function manage_members(){
+        if (!$this->ion_auth->logged_in() || (!$this->ion_auth->in_group(array(1)))) {
+			redirect('front/login', 'refresh');
+		}
         $pageData = new stdClass();
         $this->data =   array();
         $pageData->page_meta_title       =   'Manage Members';
@@ -127,6 +158,9 @@ class Front extends CI_Controller
     }
 
     public function save_member(){
+        if (!$this->ion_auth->logged_in() || (!$this->ion_auth->in_group(array(1)))) {
+			redirect('front/login', 'refresh');
+		}
         try {
             $isNew =  $this->input->post("isNew");
             $data = (object) $this->input->post("new_member");
@@ -208,8 +242,43 @@ class Front extends CI_Controller
         }
     }
 
+    public function login(){
+
+		$this->form_validation->set_rules('username', 'username', 'required');
+		$this->form_validation->set_rules('password', 'password', 'required');
+		if ($this->form_validation->run() == FALSE) {
+			$this->load->view('front/login');
+		} else {
+            
+			if ($this->ion_auth->login($this->input->post('username'),$this->input->post('password'), false)) {
+				$usr = $this->ion_auth->user()->row();
+				 
+				$this->session->set_userdata("name", $usr->name);
+				$this->session->set_userdata("user_id", $usr->id);
+				$this->session->set_flashdata('message', $this->ion_auth->messages());
+				$this->output->delete_cache();
+				
+                $groups = $this->ion_auth->get_users_groups($usr->id)->result();
+				$u_group = array();
+				foreach ($groups as $row){
+					array_push($u_group,(int)$row->id); 
+				}
+				 
+				$this->session->set_userdata("group_ids",$u_group);
+				redirect('front/dashboard', 'refresh');
+
+			} else {
+				$this->session->set_flashdata('message', $this->ion_auth->errors());
+				$this->load->view('front/login');
+			}
+		}
+	   }
+
     function error_404()
     {
+        if (!$this->ion_auth->logged_in()) {
+			redirect('front/login', 'refresh');
+		}
         $pageData = new stdClass();
         $this->data =   array();
         $pageData->page_alias = "error_404";
@@ -220,5 +289,17 @@ class Front extends CI_Controller
         $this->load->view("front/error_404", $this->data);
     }  
  
+    public function logout(){
+        if (!$this->ion_auth->logged_in()) {
+			redirect('front/login', 'refresh');
+		}
+		$logout = $this->ion_auth->logout();
+        redirect(base_url() . 'front/logout_message', 'refresh');
+    }
+
+    public function logout_message() {
+		$this->session->set_flashdata('message', 'Successfully! Logged Out!');
+		redirect(base_url(), 'refresh');
+	}
      
 }

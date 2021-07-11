@@ -150,7 +150,7 @@
                         <a class="dropdown-item" href="<?= base_url() ?>profile">
                             <i class="align-middle me-1" data-feather="user"></i> Profile
                         </a>
-						<a class="dropdown-item" href="#">
+						<a class="dropdown-item" href="<?php echo base_url(); ?>front/logout">
                             <i class="align-middle me-1" data-feather="log-out"></i> Sign out
                         </a> 
                     </div>
